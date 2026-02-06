@@ -13,7 +13,6 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 import xyz.lapismc.exsurvival.EXSurvivalPlugin;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 @DefaultQualifier(NonNull.class)
 public class GameSession {

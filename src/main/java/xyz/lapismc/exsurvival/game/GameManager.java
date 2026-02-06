@@ -21,7 +21,6 @@ import xyz.lapismc.exsurvival.util.MessageManager;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.logging.Logger;
 
 @DefaultQualifier(NonNull.class)
 public class GameManager {
