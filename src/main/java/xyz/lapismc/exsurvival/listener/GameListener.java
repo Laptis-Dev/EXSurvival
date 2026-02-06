@@ -14,8 +14,6 @@ import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
-import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-
 import xyz.lapismc.exsurvival.EXSurvivalPlugin;
 import xyz.lapismc.exsurvival.game.GameManager;
 import xyz.lapismc.exsurvival.game.GameState;

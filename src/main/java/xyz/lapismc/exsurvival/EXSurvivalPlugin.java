@@ -8,11 +8,6 @@ import xyz.lapismc.exsurvival.game.GameManager;
 import xyz.lapismc.exsurvival.listener.GameListener;
 import xyz.lapismc.exsurvival.util.MessageManager;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-
 @DefaultQualifier(NonNull.class)
 public class EXSurvivalPlugin extends JavaPlugin {
     private MessageManager messageManager;

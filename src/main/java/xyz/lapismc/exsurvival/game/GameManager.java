@@ -3,7 +3,6 @@ package xyz.lapismc.exsurvival.game;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -120,7 +119,7 @@ public class GameManager {
         UUID uuid = player.getUniqueId();
         session.setWeaponSelection(uuid, weaponId);
 
-        String locale = messageManager.getPlayerLocale(player);
+        // String locale = messageManager.getPlayerLocale(player);
         String weaponName = plugin.getConfig().getString("opening-battle.weapon-kits." + weaponId + ".name", weaponId);
         Map<String, String> replacements = Map.of("weapon", weaponName);
         messageManager.sendMessage(player, "opening-battle.weapon-selection.confirmed", replacements);
