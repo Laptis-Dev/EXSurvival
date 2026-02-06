@@ -1,0 +1,82 @@
+# EXSurvival 中文语言文件
+
+# 通用消息
+prefix: "§6[EXSurvival]§r"
+no-permission: "§c你没有权限执行此命令！"
+player-only: "§c此命令只能由玩家执行！"
+game-already-running: "§c游戏已经在进行中！"
+no-game-running: "§c当前没有游戏在进行！"
+world-not-found: "§c找不到指定的世界：{world}"
+
+# 命令消息
+command:
+  usage: "§e用法：/exs start <世界ID>"
+  game-started: "§a游戏已在世界 §e{world}§a 中开始！"
+
+# 开局战消息
+opening-battle:
+  title: "§c§l开局战"
+  subtitle: "§e选择你的武器！"
+  rules:
+    - "§6========== 游戏规则 =========="
+    - "§e1. 从说明书中选择一种武器套装"
+    - "§e2. 所有玩家准备后开始开局战"
+    - "§e3. 在 {size}x{size} 的区域内进行 PvP"
+    - "§e4. 最后存活者获得第一名"
+    - "§6=============================="
+  weapon-selection:
+    book-name: "§6§lEXSurvival 说明书"
+    menu-title: "§0选择武器套装"
+    confirm-button: "§a§l确认准备"
+    confirmed: "§a你已选择 §e{weapon}§a 并确认准备！"
+    waiting: "§e等待其他玩家准备... ({ready}/{total})"
+    all-ready: "§a所有玩家已准备！开局战即将开始..."
+  countdown: "§e开局战将在 §c{seconds}§e 秒后开始！"
+  start: "§c§l开局战开始！"
+  death-order: "§7{player} §e第 §c{rank}§e 名被淘汰"
+  winner: "§6{player} §e获得第一名！"
+  rewards-distributed: "§a生存奖励已分发！15秒后开始自由生存……"
+  reward-received: "§a你获得了 §e{rank}§a 的奖励！"
+
+# 正式游戏消息
+survival-phase:
+  title: "§a§l自由生存"
+  subtitle: "§e发育时间：{time} 分钟"
+  rules:
+    - "§6========== 游戏规则 =========="
+    - "§e1. 前 {free-time} 分钟为自由生存时间"
+    - "§e2. 之后开启 PvP，死亡 {max-deaths} 次即失败"
+    - "§e3. {total-time} 分钟后游戏结束"
+    - "§e4. 你的血量上限已提升至 {max-health}"
+    - "§6=============================="
+  countdown: "§e正式游戏将在 §c{seconds}§e 秒后开始！"
+  start: "§a§l自由生存开始！"
+  pvp-enabled-title: "§c§lPvP 开启"
+  pvp-enabled-subtitle: "§e小心其他玩家！"
+  pvp-enabled: "§c§lPvP 已开启！小心其他玩家！"
+  death-message: "§c你已死亡 {deaths}/{max-deaths} 次"
+  eliminated: "§c你已被淘汰！"
+  player-eliminated: "§c{player} §e已被淘汰！"
+  game-ending: "§e游戏即将结束，正在传送所有玩家..."
+
+# Boss 栏消息
+bossbar:
+  opening-battle: "§c开局战进行中 - 剩余 {players} 名玩家"
+  free-survival: "§a自由生存 - 剩余时间：{time}"
+  pvp-phase: "§cPvP 阶段 - 剩余时间：{time}"
+
+# 记分板消息
+scoreboard:
+  title: "§6§lEXSurvival"
+  deaths: "§c死亡次数"
+  rank: "§e排名"
+  time-remaining: "§a剩余时间"
+
+# 游戏结束消息
+game-end:
+  title: "§6§l游戏结束"
+  subtitle: "§e感谢参与！"
+  ranking-header: "§6========== 最终排名 =========="
+  ranking-entry: "§e{rank}. §a{player} §7- §c{deaths} 次死亡"
+  ranking-footer: "§6=============================="
+  winner: "§6恭喜 {player} 获得胜利！"

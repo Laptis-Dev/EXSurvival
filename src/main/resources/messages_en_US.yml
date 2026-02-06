@@ -1,0 +1,82 @@
+# EXSurvival English Language File
+
+# General Messages
+prefix: "§6[EXSurvival]§r"
+no-permission: "§cYou don't have permission to execute this command!"
+player-only: "§cThis command can only be executed by players!"
+game-already-running: "§cA game is already running!"
+no-game-running: "§cNo game is currently running!"
+world-not-found: "§cWorld not found: {world}"
+
+# Command Messages
+command:
+  usage: "§eUsage: /exs start <world-id>"
+  game-started: "§aGame started in world §e{world}§a!"
+
+# Opening Battle Messages
+opening-battle:
+  title: "§c§lOpening Battle"
+  subtitle: "§eChoose your weapon!"
+  rules:
+    - "§6========== Game Rules =========="
+    - "§e1. Choose a weapon kit from the guidebook"
+    - "§e2. Battle starts when all players are ready"
+    - "§e3. PvP in a {size}x{size} area"
+    - "§e4. Last survivor wins first place"
+    - "§6================================"
+  weapon-selection:
+    book-name: "§6§lEXSurvival Guidebook"
+    menu-title: "§0Choose Weapon Kit"
+    confirm-button: "§a§lConfirm Ready"
+    confirmed: "§aYou selected §e{weapon}§a and confirmed ready!"
+    waiting: "§eWaiting for other players... ({ready}/{total})"
+    all-ready: "§aAll players ready! Opening battle starting..."
+  countdown: "§eOpening battle starts in §c{seconds}§e seconds!"
+  start: "§c§lOpening Battle Started!"
+  death-order: "§7{player} §eeliminated in §c{rank}§e place"
+  winner: "§6{player} §ewon first place!"
+  rewards-distributed: "§aSurvival rewards distributed! Free Survival would start in 15 seconds..."
+  reward-received: "§aYou received §e{rank}§a rewards!"
+
+# Survival Phase Messages
+survival-phase:
+  title: "§a§lFree Survival"
+  subtitle: "§eDevelopment time: {time} minutes"
+  rules:
+    - "§6========== Game Rules =========="
+    - "§e1. First {free-time} minutes: free survival"
+    - "§e2. Then PvP enabled, {max-deaths} deaths = elimination"
+    - "§e3. Game ends after {total-time} minutes"
+    - "§e4. Your max health increased to {max-health}"
+    - "§6================================"
+  countdown: "§eSurvival phase starts in §c{seconds}§e seconds!"
+  start: "§a§lFree Survival Started!"
+  pvp-enabled-title: "§c§lPvP Enabled"
+  pvp-enabled-subtitle: "§eWatch out for other players!"
+  pvp-enabled: "§c§lPvP Enabled! Watch out for other players!"
+  death-message: "§cYou died {deaths}/{max-deaths} times"
+  eliminated: "§cYou have been eliminated!"
+  player-eliminated: "§c{player} §ehas been eliminated!"
+  game-ending: "§eGame ending, teleporting all players..."
+
+# Boss Bar Messages
+bossbar:
+  opening-battle: "§cOpening Battle - {players} players remaining"
+  free-survival: "§aFree Survival - Time remaining: {time}"
+  pvp-phase: "§cPvP Phase - Time remaining: {time}"
+
+# Scoreboard Messages
+scoreboard:
+  title: "§6§lEXSurvival"
+  deaths: "§cDeaths"
+  rank: "§eRank"
+  time-remaining: "§aTime Remaining"
+
+# Game End Messages
+game-end:
+  title: "§6§lGame Over"
+  subtitle: "§eThanks for playing!"
+  ranking-header: "§6========== Final Ranking =========="
+  ranking-entry: "§e{rank}. §a{player} §7- §c{deaths} deaths"
+  ranking-footer: "§6===================================="
+  winner: "§6Congratulations {player} for winning!"

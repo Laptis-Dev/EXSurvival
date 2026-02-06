@@ -1,0 +1,109 @@
+# EXSurvival 插件配置文件
+
+# 开局战配置
+opening-battle:
+  # 世界边界大小（正方形边长）
+  world-border-size: 100
+  # 武器套装配置
+  weapon-kits:
+    netherite-spear:
+      name: "下界合金矛"
+      item: NETHERITE_SPEAR
+      enchantments:
+        sharpness: 2
+        knockback: 2
+      lore:
+        - "§7锋利 II"
+        - "§7突进 II"
+    netherite-axe:
+      name: "下界合金斧"
+      item: NETHERITE_AXE
+      enchantments:
+        knockback: 2
+      lore:
+        - "§7击退 II"
+    heavy-hammer:
+      name: "重锤"
+      item: MACE
+      enchantments:
+        wind_burst: 1
+      lore:
+        - "§7风爆 I"
+      extra-items:
+        - type: WIND_CHARGE
+          amount: 32
+    bow:
+      name: "弓"
+      item: BOW
+      enchantments:
+        power: 2
+      lore:
+        - "§7力量 II"
+      extra-items:
+        - type: ARROW
+          amount: 64
+    trident:
+      name: "三叉戟"
+      item: TRIDENT
+      enchantments:
+        loyalty: 1
+        impaling: 2
+      lore:
+        - "§7忠诚 I"
+        - "§7穿刺 II"
+    crossbow:
+      name: "弩"
+      item: CROSSBOW
+      enchantments:
+        quick_charge: 3
+        power: 3
+      lore:
+        - "§7快速装填 III"
+        - "§7力量 III"
+      extra-items:
+        - type: ARROW
+          amount: 64
+  # 标准防具配置
+  standard-armor: []
+  # 其他装备配置
+  extra-equipment: []
+  # 生存奖励配置
+  survival-rewards:
+    rank-1:
+      items:
+        - type: TOTEM_OF_UNDYING
+          amount: 1
+        - type: ENDER_PEARL
+          amount: 3
+    rank-2:
+      items:
+        - type: TOTEM_OF_UNDYING
+          amount: 1
+        - type: ENDER_PEARL
+          amount: 2
+    rank-3:
+      items:
+        - type: TOTEM_OF_UNDYING
+          amount: 1
+        - type: ENDER_PEARL
+          amount: 1
+    rank-other:
+      items:
+        - type: IRON_INGOT
+          amount: 3
+
+opening-phase:
+  max-health: 40
+
+# 正式游戏配置
+survival-phase:
+  # 玩家最大血量
+  max-health: 40
+  # 自由生存时间（分钟）
+  free-survival-time: 30
+  # 总游戏时间（分钟）
+  total-game-time: 120
+  # 死亡次数限制
+  max-deaths: 5
+  # 游戏难度
+  difficulty: 

@@ -1,4 +1,5 @@
 import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
+import xyz.jpenilla.resourcefactory.bukkit.Permission
 
 plugins {
     `java-library`
@@ -54,4 +55,23 @@ bukkitPluginYaml {
     load = BukkitPluginYaml.PluginLoadOrder.STARTUP
     authors.add("MesuDevastator")
     apiVersion = "1.21.11"
+
+    commands {
+        register("exsurvival") {
+            description = "EXSurvival main command"
+            aliases = listOf("exs")
+            usage = "/exsurvival <start|stop> [world-id]"
+        }
+    }
+
+    permissions {
+        register("exsurvival.control") {
+            description = "Allows starting and controlling EXSurvival games"
+            default = Permission.Default.OP
+        }
+        register("exsurvival.reload") {
+            description = "Allows reloading EXSurvival configuration"
+            default = Permission.Default.OP
+        }
+    }
 }
