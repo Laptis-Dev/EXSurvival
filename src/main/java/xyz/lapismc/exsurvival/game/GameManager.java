@@ -7,6 +7,8 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,21 +31,20 @@ public class GameManager {
     private final WeaponSelectionMenu weaponMenu;
     private final GameSession session;
     private final ScoreboardManager scoreboardManager;
-    private final Logger logger;
 
     private @Nullable BukkitTask countdownTask;
     private @Nullable BukkitTask gameTask;
     private @Nullable BossBar bossBar;
     private boolean shouldDisableMove = false;
+    private boolean teleported = false;
 
-    public GameManager(EXSurvivalPlugin plugin, MessageManager messageManager, Logger logger) {
+    public GameManager(EXSurvivalPlugin plugin, MessageManager messageManager) {
         this.plugin = plugin;
         this.messageManager = messageManager;
         this.playerDataManager = new PlayerDataManager();
         this.weaponMenu = new WeaponSelectionMenu(plugin, messageManager);
-        this.session = new GameSession(logger);
+        this.session = new GameSession(plugin);
         this.scoreboardManager = new ScoreboardManager(messageManager, session);
-        this.logger = logger;
     }
 
     public boolean shouldDisableMove() {
@@ -52,7 +53,10 @@ public class GameManager {
 
     public void setDisableMove(boolean value) {
         shouldDisableMove = value;
-        logger.info("Move: " + (value ? "enabled" : "disabled"));
+    }
+
+    public boolean isTeleported() {
+        return teleported;
     }
 
     public boolean isGameRunning() {
@@ -119,7 +123,6 @@ public class GameManager {
         UUID uuid = player.getUniqueId();
         session.setWeaponSelection(uuid, weaponId);
 
-        // String locale = messageManager.getPlayerLocale(player);
         String weaponName = plugin.getConfig().getString("opening-battle.weapon-kits." + weaponId + ".name", weaponId);
         Map<String, String> replacements = Map.of("weapon", weaponName);
         messageManager.sendMessage(player, "opening-battle.weapon-selection.confirmed", replacements);
@@ -338,7 +341,6 @@ public class GameManager {
             Player participant = Bukkit.getPlayer(participantId);
             if (participant == null)
                 continue;
-            playerDataManager.clearPlayerData(participant);
 
             int rank = session.getRank(participantId);
             String rewardPath;
@@ -398,7 +400,7 @@ public class GameManager {
             // 重置世界边界
             WorldBorder border = world.getWorldBorder();
             border.setSize(59999968); // 默认大小
-            world.setDifficulty(Difficulty.EASY);
+            world.setDifficulty(Difficulty.valueOf(plugin.getConfig().getString("survival-phase.difficulty", "easy").toUpperCase()));
         }
         session.setPlayerInteractivity(false);
 
@@ -406,6 +408,7 @@ public class GameManager {
         int freeSurvivalTime = plugin.getConfig().getInt("survival-phase.free-survival-time", 30);
         int totalGameTime = plugin.getConfig().getInt("survival-phase.total-game-time", 120);
         int maxDeaths = plugin.getConfig().getInt("survival-phase.max-deaths", 5);
+        int tpTime = plugin.getConfig().getInt("survival-phase.tp-time", 8);
 
         // 设置玩家血量并传送
         for (UUID participantId : session.getParticipants()) {
@@ -429,7 +432,8 @@ public class GameManager {
                         "free-time", String.valueOf(freeSurvivalTime),
                         "max-deaths", String.valueOf(maxDeaths),
                         "total-time", String.valueOf(totalGameTime),
-                        "max-health", String.valueOf(maxHealth)
+                        "max-health", String.valueOf(maxHealth),
+                        "tp-time", String.valueOf(tpTime)
                 );
                 messageManager.sendMessageList(participant, "survival-phase.rules", replacements);
 
@@ -469,6 +473,7 @@ public class GameManager {
     private void startSurvivalPhaseTimer() {
         int freeSurvivalMinutes = plugin.getConfig().getInt("survival-phase.free-survival-time", 30);
         int totalGameMinutes = plugin.getConfig().getInt("survival-phase.total-game-time", 120);
+        int tpMinutes = plugin.getConfig().getInt("survival-phase.tp-time", 8);
 
         gameTask = new BukkitRunnable() {
             @Override
@@ -479,6 +484,14 @@ public class GameManager {
                 // 检查是否到达PvP时间
                 if (session.getState() == GameState.FREE_SURVIVAL && elapsedMinutes >= freeSurvivalMinutes) {
                     enablePvP();
+                }
+
+                if (session.getState() == GameState.PVP_PHASE && totalGameMinutes - elapsedMinutes <= tpMinutes + 5) {
+                    doTeleportWarn();
+                }
+
+                if (session.getState() == GameState.PVP_PHASE && totalGameMinutes - elapsedMinutes <= tpMinutes) {
+                    doTeleport();
                 }
 
                 // 更新Boss栏
@@ -521,9 +534,41 @@ public class GameManager {
                 participant.showTitle(Title.title(
                         Component.text(title),
                         Component.text(subtitle),
-                        Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))
-                ));
+                        Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))));
                 messageManager.sendMessage(participant, "survival-phase.pvp-enabled");
+            }
+        }
+    }
+
+    private void doTeleport() {
+        World world = Bukkit.getWorld(session.getWorldId());
+        if (world == null) {
+            return;
+        }
+        for (UUID participantId : session.getParticipants()) {
+            Player participant = Bukkit.getPlayer(participantId);
+            if (participant != null) {
+                String locale = messageManager.getPlayerLocale(participant);
+                String title = messageManager.getMessage(locale, "survival-phase.tp-title");
+                participant.showTitle(Title.title(
+                        Component.text(title),
+                        Component.empty(),
+                        Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))));
+                participant.teleport(world.getSpawnLocation());
+            }
+        }
+        teleported = true;
+        setDisableMove(true);
+        startCountdown(5, () -> {
+            setDisableMove(false);
+        });
+    }
+
+    private void doTeleportWarn() {
+        for (UUID participantId : session.getParticipants()) {
+            Player participant = Bukkit.getPlayer(participantId);
+            if (participant != null) {
+                messageManager.sendMessage(participant, "survival-phase.tp-warn");
             }
         }
     }
@@ -655,6 +700,8 @@ public class GameManager {
 
         scoreboardManager.clearAll();
         session.reset();
+        teleported = false;
+        setDisableMove(false);
     }
 
     private void createBossBar(String messageKey) {
@@ -842,12 +889,16 @@ public class GameManager {
                     }
                 }
 
-                // 传送到世界出生点
-                player.teleport(world.getSpawnLocation());
+                player.showBossBar(bossBar);
 
                 // 通知玩家
                 player.sendMessage("§a你已重新加入游戏！");
             }
+        }
+
+        if (state == GameState.PVP_PHASE) {
+            scoreboardManager.createScoreboard(player);
+            scoreboardManager.updateScoreboard(player);
         }
 
         if ((state == GameState.IDLE || state == GameState.ENDING) && playerDataManager.hasData(player.getUniqueId())) {
@@ -865,6 +916,40 @@ public class GameManager {
         }
         if (shouldDisableMove() && event.hasChangedBlock()) {
             event.setCancelled(true);
+        }
+    }
+
+    public void handleBlockPlace(BlockPlaceEvent event) {
+        GameState state = session.getState();
+        if (state == GameState.IDLE || teleported) {
+            return;
+        }
+        World world = Bukkit.getWorld(session.getWorldId());
+        if (world == null) {
+            return;
+        }
+        int spawnProtectionRadius = plugin.getConfig().getInt("survival-phase.spawn-protection", 16);
+        if (event.getBlock().getLocation().distance(world.getSpawnLocation()) <= spawnProtectionRadius) {
+            event.setCancelled(true);
+            Map<String, String> replacements = Map.of("radius", String.valueOf(spawnProtectionRadius));
+            messageManager.sendMessageList(event.getPlayer(), "spawn-protection.message", replacements);
+        }
+    }
+
+    public void handleBlockBreak(BlockBreakEvent event) {
+        GameState state = session.getState();
+        if (state == GameState.IDLE || teleported) {
+            return;
+        }
+        World world = Bukkit.getWorld(session.getWorldId());
+        if (world == null) {
+            return;
+        }
+        int spawnProtectionRadius = plugin.getConfig().getInt("survival-phase.spawn-protection", 16);
+        if (event.getBlock().getLocation().distance(world.getSpawnLocation()) <= spawnProtectionRadius) {
+            event.setCancelled(true);
+            Map<String, String> replacements = Map.of("radius", String.valueOf(spawnProtectionRadius));
+            messageManager.sendMessageList(event.getPlayer(), "spawn-protection.message", replacements);
         }
     }
 }

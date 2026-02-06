@@ -3,6 +3,8 @@ package xyz.lapismc.exsurvival.listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -144,5 +146,15 @@ public class GameListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         gameManager.handlePlayerMove(event);
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        gameManager.handleBlockBreak(event);
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        gameManager.handleBlockPlace(event);
     }
 }

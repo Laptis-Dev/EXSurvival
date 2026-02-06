@@ -10,11 +10,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
+import xyz.lapismc.exsurvival.EXSurvivalPlugin;
+
 import java.util.*;
 import java.util.logging.Logger;
 
 @DefaultQualifier(NonNull.class)
 public class GameSession {
+    private final EXSurvivalPlugin plugin;
     private final Set<UUID> participants = new HashSet<>();
     private final Map<UUID, String> weaponSelections = new HashMap<>();
     private final Map<UUID, Boolean> readyStatus = new HashMap<>();
@@ -22,10 +25,9 @@ public class GameSession {
     private final Map<UUID, ItemStack[]> deathInventories = new HashMap<>();
     private final List<UUID> eliminationOrder = new ArrayList<>();
     private final Set<UUID> eliminated = new HashSet<>();
-    private final Logger logger;
 
-    GameSession(Logger logger) {
-        this.logger = logger;
+    GameSession(EXSurvivalPlugin plugin) {
+        this.plugin = plugin;
     }
 
     private GameState state = GameState.IDLE;
@@ -65,7 +67,7 @@ public class GameSession {
             participant.setGameMode(interactivity ? GameMode.SURVIVAL : GameMode.ADVENTURE);
         }
 
-        logger.info("Interactivity: " + Boolean.valueOf(interactivity).toString());
+        plugin.getLogger().info("Interactivity: " + Boolean.valueOf(interactivity).toString());
     }
 
     public Set<UUID> getParticipants() {

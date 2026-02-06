@@ -13,6 +13,9 @@ command:
   usage: "§e用法：/exs start <世界ID>"
   game-started: "§a游戏已在世界 §e{world}§a 中开始！"
 
+spawn-protection:
+  message: "§a出生点附近 {radius} 格被保护！"
+
 # 开局战消息
 opening-battle:
   title: "§c§l开局战"
@@ -48,6 +51,7 @@ survival-phase:
     - "§e2. 之后开启 PvP，死亡 {max-deaths} 次即失败"
     - "§e3. {total-time} 分钟后游戏结束"
     - "§e4. 你的血量上限已提升至 {max-health}"
+    - "§e5. 最后 {tp-time} 将把所有玩家传送到世界重生点！"
     - "§6=============================="
   countdown: "§e正式游戏将在 §c{seconds}§e 秒后开始！"
   start: "§a§l自由生存开始！"
@@ -58,6 +62,8 @@ survival-phase:
   eliminated: "§c你已被淘汰！"
   player-eliminated: "§c{player} §e已被淘汰！"
   game-ending: "§e游戏即将结束，正在传送所有玩家..."
+  tp-warn: "§c§l5 分钟后将开启出生点决斗！"
+  tp-title: "§c§l出生点决斗"
 
 # Boss 栏消息
 bossbar:

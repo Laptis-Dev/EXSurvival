@@ -31,7 +31,7 @@ opening-battle:
         - "§7风爆 I"
       extra-items:
         - type: WIND_CHARGE
-          amount: 32
+          amount: 64
     bow:
       name: "弓"
       item: BOW
@@ -106,4 +106,8 @@ survival-phase:
   # 死亡次数限制
   max-deaths: 5
   # 游戏难度
-  difficulty: 
+  difficulty: easy
+  # 决斗时间（最后 X 分钟）
+  tp-time: 8
+  # 出生点保护半径
+  spawn-protection: 16

@@ -13,6 +13,9 @@ command:
   usage: "§eUsage: /exs start <world-id>"
   game-started: "§aGame started in world §e{world}§a!"
 
+spawn-protection:
+  message: "§aSpawn protection is ON in a radius of {radius} blocks!"
+
 # Opening Battle Messages
 opening-battle:
   title: "§c§lOpening Battle"
@@ -48,6 +51,7 @@ survival-phase:
     - "§e2. Then PvP enabled, {max-deaths} deaths = elimination"
     - "§e3. Game ends after {total-time} minutes"
     - "§e4. Your max health increased to {max-health}"
+    - "§e5. Players would be teleported to the world spawn in the last {tp-time} minutes!"
     - "§6================================"
   countdown: "§eSurvival phase starts in §c{seconds}§e seconds!"
   start: "§a§lFree Survival Started!"
@@ -58,6 +62,8 @@ survival-phase:
   eliminated: "§cYou have been eliminated!"
   player-eliminated: "§c{player} §ehas been eliminated!"
   game-ending: "§eGame ending, teleporting all players..."
+  tp-warn: "§c§lSpawn duel would start in 5 minutes!"
+  tp-title: "§c§lSpawn Duel"
 
 # Boss Bar Messages
 bossbar:

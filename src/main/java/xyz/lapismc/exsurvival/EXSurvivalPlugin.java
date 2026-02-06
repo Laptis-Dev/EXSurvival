@@ -27,7 +27,7 @@ public class EXSurvivalPlugin extends JavaPlugin {
 
         // 初始化管理器
         messageManager = new MessageManager(getDataFolder());
-        gameManager = new GameManager(this, messageManager, getLogger());
+        gameManager = new GameManager(this, messageManager);
 
         // 注册命令
         var exsCommand = getCommand("exsurvival");
