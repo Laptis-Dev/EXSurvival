@@ -64,6 +64,7 @@ survival-phase:
   game-ending: "§eGame ending, teleporting all players..."
   tp-warn: "§c§lSpawn duel would start in 5 minutes!"
   tp-title: "§c§lSpawn Duel"
+  tp-countdown: "§eDuel starts in §c{seconds}§e seconds!"
 
 # Boss Bar Messages
 bossbar:

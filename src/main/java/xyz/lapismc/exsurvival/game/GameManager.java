@@ -34,8 +34,6 @@ public class GameManager {
     private @Nullable BukkitTask countdownTask;
     private @Nullable BukkitTask gameTask;
     private @Nullable BossBar bossBar;
-    private boolean shouldDisableMove = false;
-    private boolean teleported = false;
 
     public GameManager(EXSurvivalPlugin plugin, MessageManager messageManager) {
         this.plugin = plugin;
@@ -44,18 +42,6 @@ public class GameManager {
         this.weaponMenu = new WeaponSelectionMenu(plugin, messageManager);
         this.session = new GameSession(plugin);
         this.scoreboardManager = new ScoreboardManager(messageManager, session);
-    }
-
-    public boolean shouldDisableMove() {
-        return shouldDisableMove;
-    }
-
-    public void setDisableMove(boolean value) {
-        shouldDisableMove = value;
-    }
-
-    public boolean isTeleported() {
-        return teleported;
     }
 
     public boolean isGameRunning() {
@@ -225,10 +211,10 @@ public class GameManager {
 
             // 开始监控玩家死亡
             startOpeningBattleMonitor();
-        });
+        }, "opening-battle.countdown");
     }
 
-    private void startCountdown(int seconds, Runnable onComplete) {
+    private void startCountdown(int seconds, Runnable onComplete, String messageKey) {
         countdownTask = new BukkitRunnable() {
             int remaining = seconds;
 
@@ -244,15 +230,8 @@ public class GameManager {
                     Player participant = Bukkit.getPlayer(participantId);
                     if (participant != null) {
                         Map<String, String> replacements = Map.of("seconds", String.valueOf(remaining));
-                        String message;
-                        if (session.getState() == GameState.OPENING_BATTLE) {
-                            message = messageManager.getMessage(messageManager.getPlayerLocale(participant),
-                                    "opening-battle.countdown", replacements);
-                        } else {
-                            message = messageManager.getMessage(messageManager.getPlayerLocale(participant),
-                                    "survival-phase.countdown", replacements);
-                        }
-                        participant.sendMessage(message);
+                        participant.sendMessage(messageManager.getMessage(messageManager.getPlayerLocale(participant),
+                                messageKey, replacements));
                     }
                 }
 
@@ -448,10 +427,10 @@ public class GameManager {
             }
         }
 
-        setDisableMove(true);
+        session.setDisableMove(true);
         // 倒计时5秒
         startCountdown(5, () -> {
-            setDisableMove(false);
+            session.setDisableMove(false);
             // 显示开始消息
             for (UUID participantId : session.getParticipants()) {
                 Player participant = Bukkit.getPlayer(participantId);
@@ -466,7 +445,7 @@ public class GameManager {
 
             // 开始游戏计时器
             startSurvivalPhaseTimer();
-        });
+        }, "survival-phase.countdown");
     }
 
     private void startSurvivalPhaseTimer() {
@@ -485,11 +464,11 @@ public class GameManager {
                     enablePvP();
                 }
 
-                if (session.getState() == GameState.PVP_PHASE && totalGameMinutes - elapsedMinutes <= tpMinutes + 5) {
+                if (session.getState() == GameState.PVP_PHASE && !session.isTeleported() && totalGameMinutes - elapsedMinutes <= tpMinutes + 5) {
                     doTeleportWarn();
                 }
 
-                if (session.getState() == GameState.PVP_PHASE && totalGameMinutes - elapsedMinutes <= tpMinutes) {
+                if (session.getState() == GameState.PVP_PHASE && !session.isTeleported() && totalGameMinutes - elapsedMinutes <= tpMinutes) {
                     doTeleport();
                 }
 
@@ -556,11 +535,11 @@ public class GameManager {
                 participant.teleport(world.getSpawnLocation());
             }
         }
-        teleported = true;
-        setDisableMove(true);
+        session.setTeleported(true);
+        session.setDisableMove(true);
         startCountdown(5, () -> {
-            setDisableMove(false);
-        });
+            session.setDisableMove(false);
+        }, "survival-phase.tp-countdown");
     }
 
     private void doTeleportWarn() {
@@ -699,8 +678,6 @@ public class GameManager {
 
         scoreboardManager.clearAll();
         session.reset();
-        teleported = false;
-        setDisableMove(false);
     }
 
     private void createBossBar(String messageKey) {
@@ -740,8 +717,10 @@ public class GameManager {
             // 保存死前装备
             session.saveDeathInventory(uuid, player.getInventory().getContents());
 
-            // 切换到观战模式
-            player.setGameMode(GameMode.SPECTATOR);
+            // 切换到观战模式（除了第二名！）
+            if (session.getEliminationOrder().size() != session.getParticipants().size() - 1) {
+                player.setGameMode(GameMode.SPECTATOR);
+            }
 
             // 通知死亡排名
             int rank = session.getRank(uuid);
@@ -913,14 +892,14 @@ public class GameManager {
         if (state == GameState.IDLE) {
             return;
         }
-        if (shouldDisableMove() && event.hasChangedBlock()) {
+        if (session.shouldDisableMove() && event.hasChangedBlock()) {
             event.setCancelled(true);
         }
     }
 
     public void handleBlockPlace(BlockPlaceEvent event) {
         GameState state = session.getState();
-        if (state == GameState.IDLE || teleported) {
+        if (state == GameState.IDLE || session.isTeleported()) {
             return;
         }
         World world = Bukkit.getWorld(session.getWorldId());
@@ -937,7 +916,7 @@ public class GameManager {
 
     public void handleBlockBreak(BlockBreakEvent event) {
         GameState state = session.getState();
-        if (state == GameState.IDLE || teleported) {
+        if (state == GameState.IDLE || session.isTeleported()) {
             return;
         }
         World world = Bukkit.getWorld(session.getWorldId());

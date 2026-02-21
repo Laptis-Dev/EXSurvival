@@ -33,6 +33,24 @@ public class GameSession {
     private String worldId;
     private long gameStartTime;
     private long pvpStartTime;
+    private boolean shouldDisableMove;
+    private boolean teleported;
+
+    public boolean shouldDisableMove() {
+        return shouldDisableMove;
+    }
+
+    public void setDisableMove(boolean value) {
+        shouldDisableMove = value;
+    }
+
+    public boolean isTeleported() {
+        return teleported;
+    }
+
+    public void setTeleported(boolean value) {
+        teleported = value;
+    }
 
     public void addParticipant(Player player) {
         UUID uuid = player.getUniqueId();
@@ -186,5 +204,7 @@ public class GameSession {
         worldId = null;
         gameStartTime = 0;
         pvpStartTime = 0;
+        shouldDisableMove = false;
+        teleported = false;
     }
 }
